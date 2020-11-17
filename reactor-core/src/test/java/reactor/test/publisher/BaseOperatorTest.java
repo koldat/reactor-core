@@ -440,40 +440,6 @@ public abstract class BaseOperatorTest<I, PI extends Publisher<? extends I>, O, 
 		}
 	}
 
-	final <S extends OperatorScenario<I, PI, O, PO>> void forEachScenario(List<S> scenarios,
-			Consumer<S> test) {
-		for (S scenario : scenarios) {
-			if (scenario == null) {
-				continue;
-			}
-
-			try {
-				test.accept(scenario);
-			}
-			catch (Error | RuntimeException e) {
-				if (scenario.description != null) {
-					e.addSuppressed(new Exception(scenario.description, scenario.stack));
-				}
-				if (scenario.stack != null) {
-					e.addSuppressed(scenario.stack);
-				}
-				throw e;
-			}
-			catch (Throwable e) {
-				if (scenario.description != null) {
-					e.addSuppressed(new Exception(scenario.description, scenario.stack));
-				}
-				if (scenario.stack != null) {
-					e.addSuppressed(scenario.stack);
-				}
-				throw Exceptions.bubble(e);
-			}
-			finally {
-				ReactorTestExecutionListener.reset();
-			}
-		}
-	}
-
 	abstract PI hide(PI input);
 
 	final StepVerifier.Step<O> inputHidden(OperatorScenario<I, PI, O, PO> scenario) {
